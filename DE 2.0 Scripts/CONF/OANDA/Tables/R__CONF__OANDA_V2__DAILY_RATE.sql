@@ -1,0 +1,34 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26\fsmilli13333 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 CREATE OR REPLACE DYNAMIC TABLE \{\{CONF\}\}.OANDA_V2.DAILY_RATE\
+TARGET_LAG = DOWNSTREAM\
+WAREHOUSE = SF_TRANSFORM_WH\
+REFRESH_MODE = INCREMENTAL\
+INITIALIZE = ON_SCHEDULE\
+DATA_METRIC_SCHEDULE = TRIGGER_ON_CHANGES\
+as\
+SELECT\
+"daily_rate_id" AS DAILY_RATE_ID,\
+"base_currency" AS BASE_CURRENCY,\
+"quote_currency" AS QUOTE_CURRENCY,\
+"midpoint" AS MIDPOINT_RATE,\
+"bid" AS BID_RATE,\
+"ask" AS ASK_RATE,\
+"date_time"::DATETIME AS DATE_TIME,\
+EXTRACT(DAY FROM DATE_TIME) AS RATE_DAY,\
+EXTRACT(MONTH FROM DATE_TIME) AS RATE_MONTH,\
+EXTRACT(YEAR FROM DATE_TIME) AS RATE_YEAR,\
+EXTRACT(HOUR FROM DATE_TIME) AS RATE_HOUR,\
+EXTRACT(MINUTE FROM DATE_TIME) AS RATE_MINUTE,\
+CASE WHEN RATE_HOUR = 23 THEN 'CONSOLIDATED' ELSE 'DAILY' END AS RATE_TYPE,\
+META_IS_DELETED,\
+META_INSERT_TIMESTAMP,\
+META_UPDATE_TIMESTAMP\
+FROM $\{DEV_DB\}RAW.OANDA_DSS.DAILY_RATE}
